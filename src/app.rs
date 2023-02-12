@@ -10,9 +10,7 @@ impl Default for GuitarApp {
 }
 
 impl GuitarApp {
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
-
-
+    pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         Default::default()
     }
 }

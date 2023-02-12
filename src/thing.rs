@@ -1,5 +1,3 @@
-use egui::pos2;
-use egui::Rect;
 use egui::vec2;
 use egui::Color32;
 use egui::Stroke;
@@ -9,7 +7,7 @@ pub fn guitar_ui(ui: &mut egui::Ui) -> egui::Response {
     let desired_size = ui.spacing().interact_size.y * egui::vec2(27.0, 9.0); // 7:1?
 
 
-    let (rect, mut response) = ui.allocate_exact_size(desired_size, egui::Sense::click());
+    let (rect, response) = ui.allocate_exact_size(desired_size, egui::Sense::click());
 
 
     if ui.is_rect_visible(rect) {
