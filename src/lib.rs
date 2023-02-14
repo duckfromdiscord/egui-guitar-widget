@@ -2,4 +2,4 @@
 
 mod app;
 pub use app::GuitarApp;
-mod thing;
+mod widget;

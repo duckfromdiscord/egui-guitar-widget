@@ -21,7 +21,7 @@ impl eframe::App for GuitarApp {
         let Self { } = self;
 
         egui::Window::new("guitar widget").show(ctx, |ui| {
-            ui.add(crate::thing::guitar());
+            ui.add(crate::widget::guitar());
          });
 
     }
