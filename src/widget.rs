@@ -4,6 +4,7 @@ use egui::{Color32, Stroke, Align2, FontId};
 
 pub fn guitar_ui(ui: &mut egui::Ui, in_strings: Option<Vec<String>>) -> egui::Response {
 
+
     let desired_size = ui.spacing().interact_size.y * egui::vec2(27.0, 9.0);
 
 
@@ -17,6 +18,17 @@ pub fn guitar_ui(ui: &mut egui::Ui, in_strings: Option<Vec<String>>) -> egui::Re
         } else {
             in_strings.unwrap()
         };
+
+
+        match &*strings {
+            [] => return response,
+            [x] => {
+                if x.is_empty() {
+                    return response;
+                }
+            },
+            _ => (),
+        }
 
         let size = vec2( -90.0, -80.0 );
         let mut posn = vec2( -10.0, -70.0 );
