@@ -27,7 +27,7 @@ impl eframe::App for GuitarApp {
             ui.horizontal(|ui| {
                 
                 ui.text_edit_singleline(&mut self.string);
-                ui.add(crate::widget::guitar(Some( self.string.split(',').into_iter().map(ToOwned::to_owned).collect::<Vec<String>>() )));
+                ui.add(crate::widget::guitar(Some( self.string.split(',').map(ToOwned::to_owned).collect::<Vec<String>>() )));
             });
 
         });
