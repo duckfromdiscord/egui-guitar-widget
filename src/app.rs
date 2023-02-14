@@ -1,13 +1,10 @@
 
+
+#[derive(Default)]
 pub struct GuitarApp {
+    string: String,
 }
 
-impl Default for GuitarApp {
-    fn default() -> Self {
-        Self {
-        }
-    }
-}
 
 impl GuitarApp {
     pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
@@ -18,10 +15,9 @@ impl GuitarApp {
 impl eframe::App for GuitarApp {
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let Self { } = self;
 
         egui::Window::new("guitar widget").show(ctx, |ui| {
-            ui.add(crate::widget::guitar());
+            ui.add(crate::widget::guitar(None));
 
 
          });
@@ -29,7 +25,9 @@ impl eframe::App for GuitarApp {
          egui::CentralPanel::default().show(ctx, |ui| {
             
             ui.horizontal(|ui| {
-                ui.add(crate::widget::guitar());
+                
+                ui.text_edit_singleline(&mut self.string);
+                ui.add(crate::widget::guitar(Some( self.string.split(',').into_iter().map(ToOwned::to_owned).collect::<Vec<String>>() )));
             });
 
         });
