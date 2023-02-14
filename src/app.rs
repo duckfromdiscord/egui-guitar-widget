@@ -22,7 +22,17 @@ impl eframe::App for GuitarApp {
 
         egui::Window::new("guitar widget").show(ctx, |ui| {
             ui.add(crate::widget::guitar());
+
+
          });
+
+         egui::CentralPanel::default().show(ctx, |ui| {
+            
+            ui.horizontal(|ui| {
+                ui.add(crate::widget::guitar());
+            });
+
+        });
 
     }
 }

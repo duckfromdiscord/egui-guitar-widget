@@ -28,22 +28,27 @@ pub fn guitar_ui(ui: &mut egui::Ui) -> egui::Response {
             posn = vec2( posn.x , posn.y + 20.0 );
 
             ui.painter()
-            .text(string.translate( vec2(157.0, 0.0) ).center(), Align2::CENTER_CENTER, strings[i], FontId::monospace(9.0), Color32::WHITE);
+            .text(string.translate( vec2(157.0, 0.0) ).center(), Align2::CENTER_CENTER, strings[i], FontId::monospace(9.0), egui::style::Visuals::text_color(&ui.visuals()));
 
 
         }
 
-        let frets: usize = 10;
+        let frets: usize = 12;
         let size = vec2( -242.0, -30.0 );
-        let mut posn = vec2(-130.0 , -20.0 );
+        let mut posn = vec2( -140.0 , -20.0 );
+        let mut step = 30.0;
 
         for i in 0..=frets {
             let fret = rect
                         .expand2(size)
                         .translate(posn);
-            posn.x += ( (12-i) as f32 ) * 3.5 ; // adjust this value
+            posn.x += step;
+            step -= 1.4;
             ui.painter()
                         .rect(fret, 0.0, Color32::from_rgb(99, 120, 120) , Stroke::default());
+            
+            ui.painter()
+            .text(fret.translate( vec2( 0.0, 70.0 )).center(), Align2::CENTER_CENTER, i, FontId::monospace(9.0), egui::style::Visuals::text_color(&ui.visuals()));
         }
 
     }
