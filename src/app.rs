@@ -74,9 +74,20 @@ impl eframe::App for GuitarApp {
                     strings: vec![],
                 };
 
-                // self.string.split(',').map(ToOwned::to_owned).collect::<Vec<String>>()
+                let string_names = self.string.split(',').collect::<Vec<&str>>();
 
-                ui.add(crate::widget::guitar( None ));
+                if !string_names[0].is_empty() || string_names.len() > 1 { // you can have the first string name empty and still have other strings to make
+                    for string_name in string_names {
+                        guitar.strings.push( GuitarString {
+                            held: vec![],
+                            string: string_name.to_string()
+                        });
+                    }
+                    ui.add(crate::widget::guitar( Some(guitar) ));
+                } else {
+                    ui.add(crate::widget::guitar( None ));
+                }
+                
             });
 
         });
