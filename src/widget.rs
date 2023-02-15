@@ -1,8 +1,24 @@
 use egui::vec2;
 use egui::{Color32, Stroke, Align2, FontId};
 
+#[derive(Copy, Clone, Debug)]
+pub struct HeldFret {
+    pub finger: i8,
+    pub fret: i8,
+}
 
-pub fn guitar_ui(ui: &mut egui::Ui, in_strings: Option<Vec<String>>, in_frets: Option<Vec<Vec<i8>>>) -> egui::Response {
+#[derive(Clone, Debug)]
+pub struct GuitarString {
+    pub string: String,
+    pub held: Vec<HeldFret>,
+}
+
+#[derive(Clone, Debug)]
+pub struct Guitar {
+    pub strings: Vec<GuitarString>,
+}
+
+pub fn guitar_ui(ui: &mut egui::Ui, in_strings: Option<Guitar>) -> egui::Response {
 
 
     let desired_size = ui.spacing().interact_size.y * egui::vec2(27.0, 9.0);
@@ -13,30 +29,33 @@ pub fn guitar_ui(ui: &mut egui::Ui, in_strings: Option<Vec<String>>, in_frets: O
 
     if ui.is_rect_visible(rect) {
 
-        let strings: Vec<String> = if Option::is_none(&in_strings) {
-            ["e", "b", "G", "D", "A", "E"].into_iter().map(ToOwned::to_owned).collect::<Vec<String>>()
-        } else {
-            in_strings.unwrap()
-        };
+        
+        let frets: usize = 12;
+        
+        let mut strings: Vec<String> = vec![];
+        let mut selected_frets: Vec<Vec<i8>> = vec![];
 
-
-        match &*strings {
-            [] => return response,
-            [x] => {
-                if x.is_empty() {
-                    return response;
+        match in_strings {
+            Some(s) => {
+                for guitar_string in s.strings {
+                    strings.push(guitar_string.string);
+                    let mut selected_frets_in_string: Vec<i8> = vec![];
+                    for _i in 0..=frets {
+                        selected_frets_in_string.push(-1);
+                    }
+                    for held_fret in guitar_string.held {
+                        selected_frets_in_string[held_fret.fret as usize] = held_fret.finger;
+                    }
+                    selected_frets.push(selected_frets_in_string);
                 }
             },
-            _ => (),
+            None => {
+               strings = ["e", "b", "G", "D", "A", "E"].into_iter().map(ToOwned::to_owned).collect::<Vec<String>>();
+               for _i in 0..=frets {
+                    selected_frets.push(vec![]);
+               }
+            }
         }
-
-
-
-        let selected_frets: Vec<Vec<i8>> = if Option::is_none(&in_frets) {
-            vec![ vec![], vec![], vec![], vec![], vec![], vec![] ]
-        } else {
-            in_frets.unwrap()
-        };
 
         let size = vec2( -90.0, -80.0 );
         let mut posn = vec2( -10.0, -70.0 );
@@ -57,7 +76,6 @@ pub fn guitar_ui(ui: &mut egui::Ui, in_strings: Option<Vec<String>>, in_frets: O
 
         }
         
-        let frets: usize = 12;
         let mut posn = vec2( 80.0, 10.0 );
 
 
@@ -85,18 +103,16 @@ pub fn guitar_ui(ui: &mut egui::Ui, in_strings: Option<Vec<String>>, in_frets: O
 
                 let actual_fret = frets-i;
                 
-
-                dbg!(actual_fret);
-
                 if selected_frets.len() >= j {
                     if selected_frets[j].len() as isize - 1 >= actual_fret as isize {
                         /*
                         -1 to disable, 0 for no finger. so if you want to have 3rd fret enabled, no finger, -1 ,-1 , 0. if you want to have finger 1 on the 3rd: -1 , -1 , 1
                          */
-                        if selected_frets[j][actual_fret] != -1 {
-                            ui.painter().circle_filled(fret_segment.center(), 5.0, Color32::from_rgb(255,255,255));
-                            if selected_frets[j][actual_fret] != 0 {
-                                ui.painter().text(fret_segment.center(), Align2::CENTER_CENTER, selected_frets[j][actual_fret], FontId::monospace(9.0), Color32::from_rgb(0,0,0));
+                        let finger = selected_frets[j][actual_fret];
+                        if finger != -1 {
+                            ui.painter().circle_filled(fret_segment.center_top(), 5.0, Color32::from_rgb(255,255,255));
+                            if finger != 0 {
+                                ui.painter().text(fret_segment.center_top(), Align2::CENTER_CENTER, selected_frets[j][actual_fret], FontId::monospace(9.0), Color32::from_rgb(0,0,0));
                             }
                         }
                         
@@ -121,7 +137,7 @@ pub fn guitar_ui(ui: &mut egui::Ui, in_strings: Option<Vec<String>>, in_frets: O
 }
 
 
-pub fn guitar(in_strings: Option<Vec<String>>, in_frets: Option<Vec<Vec<i8>>>) -> impl egui::Widget {
+pub fn guitar(in_strings: Option<Guitar>) -> impl egui::Widget {
     let in_strings = in_strings;
-    move |ui: &mut egui::Ui| guitar_ui(ui, in_strings, in_frets)
+    move |ui: &mut egui::Ui| guitar_ui(ui, in_strings)
 }

@@ -1,5 +1,7 @@
 
 
+use crate::widget::*;
+
 #[derive(Default)]
 pub struct GuitarApp {
     string: String,
@@ -17,10 +19,47 @@ impl eframe::App for GuitarApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
 
 
-        let mut selected = vec![ /* e */ vec![1,-1,-1,3], /* b */ vec![0], /* G */ vec![], /* D */ vec![] , /* A */ vec![], /* E */ vec![] ];
+        let mut selected = Guitar {
+            strings: vec![
+                GuitarString {
+                    string: "e".to_string(),
+                    held: vec![
+                        HeldFret {
+                            finger: 2,
+                            fret: 3,
+                        }
+                    ],
+                },
+                GuitarString {
+                    string: "b".to_string(),
+                    held: vec![],
+                },
+                GuitarString {
+                    string: "G".to_string(),
+                    held: vec![],
+                },
+                GuitarString {
+                    string: "D".to_string(),
+                    held: vec![
+                        HeldFret {
+                            finger: 2,
+                            fret: 5,
+                        }
+                    ],
+                },
+                GuitarString {
+                    string: "A".to_string(),
+                    held: vec![],
+                },
+                GuitarString {
+                    string: "E".to_string(),
+                    held: vec![],
+                }
+            ],
+        };
 
         egui::Window::new("guitar widget").show(ctx, |ui| {
-            ui.add(crate::widget::guitar(None, Some(selected)));
+            ui.add(crate::widget::guitar(Some(selected)));
 
 
          });
@@ -31,7 +70,13 @@ impl eframe::App for GuitarApp {
                 
                 ui.text_edit_singleline(&mut self.string);
 
-                ui.add(crate::widget::guitar(Some( self.string.split(',').map(ToOwned::to_owned).collect::<Vec<String>>() ), None ));
+                let mut guitar = Guitar {
+                    strings: vec![],
+                };
+
+                // self.string.split(',').map(ToOwned::to_owned).collect::<Vec<String>>()
+
+                ui.add(crate::widget::guitar( None ));
             });
 
         });
