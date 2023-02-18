@@ -59,9 +59,15 @@ impl eframe::App for GuitarApp {
         };
 
         egui::Window::new("guitar widget").show(ctx, |ui| {
-            ui.add(crate::widget::guitar(Some(selected)));
+            ui.add(crate::widget::guitar(Some(selected.clone()), Side::HORIZONTAL));
 
 
+         });
+
+
+
+         egui::Window::new("guitar widgeet").show(ctx, |ui| {
+            ui.add(crate::widget::guitar(Some(selected), Side::VERTICAL));
          });
 
          egui::CentralPanel::default().show(ctx, |ui| {
@@ -83,9 +89,9 @@ impl eframe::App for GuitarApp {
                             string: string_name.to_string()
                         });
                     }
-                    ui.add(crate::widget::guitar( Some(guitar) ));
+                    ui.add(crate::widget::guitar( Some(guitar) , Side::HORIZONTAL));
                 } else {
-                    ui.add(crate::widget::guitar( None ));
+                    ui.add(crate::widget::guitar( None , Side::HORIZONTAL));
                 }
                 
             });
